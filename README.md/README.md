@@ -106,11 +106,29 @@ python src/modeling/train_model.py
 
 
 ---
+## ✅ Validação externa
+
+Os achados do modelo foram confrontados com literatura e dados oficiais:
+
+- **Taxa de abandono:** a taxa nacional de abandono de TB no Brasil foi de 15% em 2022 (estudo com dados do SINAN). A taxa encontrada no RJ (19,4%) está acima da média nacional, consistente com o Rio de Janeiro sendo historicamente um dos estados de maior vulnerabilidade para abandono de tratamento de TB.
+- **Fatores de risco:** estudo nacional de 2024 (dados do SINAN) identificou os mesmos fatores como mais associados ao abandono — situação de rua, uso de drogas ilícitas, HIV/AIDS e histórico de tratamento anterior — confirmando que o modelo está capturando sinal real, não ruído.
+- **Contexto oficial do RJ:** a Secretaria de Estado de Saúde do RJ e o Boletim Epidemiológico de Tuberculose do Rio documentam que o abandono no estado está historicamente acima da meta da OMS (<5%) há mais de uma década, concentrado em áreas de maior vulnerabilidade social.
+
+**Fontes:**
+- [Boletim Epidemiológico - Tuberculose no Município do Rio de Janeiro](https://epirio.svs.rio.br/wp-content/uploads/2023/03/BOLETIM_epidemiologico_TUBERCULOSE_MIOLO_2023_FINAL_v2.pdf)
+- Tendência e fatores associados ao abandono de tratamento da tuberculose no Brasil (2024) — [acervomais.com.br](https://acervomais.com.br/index.php/saude/article/view/23023)
+- Prevalência do Abandono no Tratamento de Tuberculose por Sexo e Faixa Etária nas Regiões Brasileiras entre 2013 e 2023 — [Brazilian Journal of Health Review](https://ojs.brazilianjournals.com.br/ojs/index.php/BJHR/article/view/75397)
+
+---
 
 ## 🗺️ Próximos passos
 
 - [ ] Testar SMOTE como alternativa ao `class_weight="balanced"`
 - [ ] Dashboard executivo com perfil de risco por região do RJ
-- [ ] Validar achados contra literatura/dados oficiais de abandono de TB
 
 ---
+## 📈 Resultados visuais
+
+![Matriz de confusão](dashboards/matriz_confusao.png)
+![Importância de variáveis](dashboards/importancia_variaveis.png)
+![Trade-off threshold](dashboards/tradeoff_threshold.png)
