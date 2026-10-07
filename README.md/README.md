@@ -1,12 +1,12 @@
-# 🏥 Previsão de Abandono de Tratamento de Tuberculose — Rio de Janeiro
+# Previsão de Abandono de Tratamento de Tuberculose — Rio de Janeiro
 
 Modelo de machine learning que prevê, a partir do perfil inicial de um paciente diagnosticado com tuberculose, a probabilidade dele abandonar o tratamento antes de completá-lo — permitindo priorização de busca ativa e intervenção precoce.
 
-**Status:** ✅ Modelo treinado e validado
+**Status:**  Modelo treinado e validado
 
 ---
 
-## 🎯 Contexto e motivação
+##  Contexto e motivação
 
 O Brasil tem como meta nacional uma taxa de abandono de tratamento de TB **abaixo de 5%** (Ministério da Saúde). Abandono de tratamento é um dos maiores riscos de saúde pública em TB: favorece recidiva, resistência medicamentosa (TB-DR) e manutenção da cadeia de transmissão.
 
@@ -14,7 +14,7 @@ Diferente de um evento agudo (como dengue), abandono é um processo gradual — 
 
 ---
 
-## 📊 Principais achados
+##  Principais achados
 
 - **Taxa de abandono no RJ (2022-2024): 19,4%** — quase 4x acima da meta nacional de 5%, um indicador real de vulnerabilidade social na região.
 - **Fatores de maior peso preditivo** (via importância de variáveis, Random Forest): uso de drogas, idade, histórico de abandono prévio, situação de rua e tipo de entrada no tratamento — consistente com a literatura epidemiológica sobre determinantes sociais do abandono de TB.
@@ -23,14 +23,14 @@ Diferente de um evento agudo (como dengue), abandono é um processo gradual — 
 
 ---
 
-## 🗂️ Fonte de dados
+##  Fonte de dados
 
 - **SINAN-TB**, via [PySUS](https://github.com/AlertaDengue/PySUS) (biblioteca Python para acesso ao FTP legado do DATASUS — Sinan Net).
 - Recorte: Rio de Janeiro, 2022–2024.
 
 ---
 
-## 🏗️ Arquitetura
+##  Arquitetura
 
 abandono-tratamento-tb/
 ├── data/
@@ -50,14 +50,14 @@ abandono-tratamento-tb/
 
 ---
 
-## 🛠️ Stack técnica
+## Stack técnica
 
 - **Python** — pandas, scikit-learn, PySUS, joblib
 - Regressão Logística e Random Forest (comparação)
 
 ---
 
-## 🔧 Desafios técnicos e decisões de engenharia
+##  Desafios técnicos e decisões de engenharia
 
 ### 1. Fonte de dados sem download em massa direto
 **Problema:** diferente da dengue (Portal de Dados Abertos moderno), o SINAN-TB só está disponível via FTP legado do DATASUS.
@@ -81,8 +81,17 @@ abandono-tratamento-tb/
 **Decisão:** a variável `TRATAMENTO` (tipo de entrada) inclui a categoria "Reingresso após Abandono", que poderia parecer vazamento. Avaliado como **não sendo vazamento**: a informação reflete histórico anterior, disponível no momento do diagnóstico atual — equivalente a usar histórico de inadimplência em um modelo de crédito.
 
 ---
+## SMOTE vs. class_weight (testado e descartado)
 
-## 🤖 Modelagem
+Testamos o SMOTE como alternativa ao `class_weight="balanced"` para lidar com o desbalanceamento de classes. O resultado foi inferior em todas as métricas (recall 55% vs. 63%, AUC 0,716 vs. 0,746).
+
+**Hipótese para o resultado:** o SMOTE interpola numericamente entre exemplos reais para gerar dados sintéticos — mas, com features majoritariamente categóricas (one-hot encoded), essa interpolação pode gerar combinações sem significado real, introduzindo ruído em vez de sinal útil. `class_weight`, por não alterar os dados de treino, evitou esse problema.
+
+**Decisão final:** mantido `class_weight="balanced"` como abordagem de balanceamento de classes.
+
+---
+
+## Modelagem
 
 | Modelo | Recall (Abandono) | Precision (Abandono) | AUC-ROC |
 |---|---|---|---|
@@ -94,7 +103,7 @@ abandono-tratamento-tb/
 
 ---
 
-## ▶️ Como rodar
+## Como rodar
 
 python -m venv venv
 venv\Scripts\activate
@@ -106,7 +115,7 @@ python src/modeling/train_model.py
 
 
 ---
-## ✅ Validação externa
+## Validação externa
 
 Os achados do modelo foram confrontados com literatura e dados oficiais:
 
@@ -121,13 +130,12 @@ Os achados do modelo foram confrontados com literatura e dados oficiais:
 
 ---
 
-## 🗺️ Próximos passos
+## Próximos passos
 
-- [ ] Testar SMOTE como alternativa ao `class_weight="balanced"`
 - [ ] Dashboard executivo com perfil de risco por região do RJ
 
 ---
-## 📈 Resultados visuais
+## Resultados visuais
 
 ![Matriz de confusão](dashboards/matriz_confusao.png)
 ![Importância de variáveis](dashboards/importancia_variaveis.png)

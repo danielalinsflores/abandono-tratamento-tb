@@ -83,7 +83,26 @@ def main() -> None:
             zero_division=0,
         ))
 
-    
+    from imblearn.over_sampling import SMOTE
+
+    print("\n\n--- Regressão Logística com SMOTE ---")
+    smote = SMOTE(random_state=42)
+    X_train_smote, y_train_smote = smote.fit_resample(X_train, y_train)
+
+    print(f"Treino original: {len(X_train)} linhas ({y_train.mean()*100:.1f}% abandono)")
+    print(f"Treino com SMOTE: {len(X_train_smote)} linhas ({y_train_smote.mean()*100:.1f}% abandono)")
+
+    modelo_smote = LogisticRegression(max_iter=1000, random_state=42)
+    modelo_smote.fit(X_train_smote, y_train_smote)
+
+    y_pred_smote = modelo_smote.predict(X_test)
+    y_proba_smote = modelo_smote.predict_proba(X_test)[:, 1]
+
+    print(classification_report(y_test, y_pred_smote, target_names=["Não abandonou", "Abandonou"]))
+    print(f"AUC-ROC: {roc_auc_score(y_test, y_proba_smote):.3f}")
+    print("\nMatriz de confusão:")
+    print(confusion_matrix(y_test, y_pred_smote))
+
     THRESHOLD_FINAL = 0.4
     joblib.dump(modelo, MODELS_DIR / "modelo_regressao_logistica.pkl")
     with open(MODELS_DIR / "threshold.txt", "w") as f:
